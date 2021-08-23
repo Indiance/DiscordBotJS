@@ -5,6 +5,7 @@ const client = new Client({ intents });
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 client.commands = new Collection();
 const prefix = '+';
+// get the command files
 for (const file of commandFiles) {
 	const command = require(`../commands/${file}`);
 	client.commands.set(command.name, command);
