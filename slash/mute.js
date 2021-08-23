@@ -11,11 +11,14 @@ module.exports = {
 		const target = interaction.options.getMentionable('member');
 		const reason = interaction.options.getString('reason');
 		const mutedRole = interaction.guild.roles.cache.find(role => role.name.toLowerCase().includes('muted'));
-        /* try and mute the member
+		/* try and mute the member
          * if successful -> interaction will reply so
          * if not successfull -> interaction will reply in the negative
          */
-        // TODO add interaction incase the user has been muted already
+		// check if a user is muted already
+		if (target.roles.cache.has(mutedRole.id)) {
+			return interaction.reply('The user has already been muted');
+		}
 		try {
 			if (reason === null) {
 				target.roles.add(mutedRole);
@@ -23,11 +26,11 @@ module.exports = {
 			}
 			else {
 				target.roles.add(mutedRole);
-				interaction.reply(`${target.displayName} has been muted for the reason **${reason}**`);
+				return interaction.reply(`${target.displayName} has been muted for the reason **${reason}**`);
 			}
 		}
 		catch {
-			interaction.reply('that action could not be done');
+			return interaction.reply('that action could not be done');
 		}
 	},
 };
