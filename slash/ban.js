@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-    // setup the data
+	// setup the data
 		.setName('ban')
 		.setDescription('Ban a member')
 		.addMentionableOption(option => option.setName('member').setDescription('The member to ban').setRequired(true))
