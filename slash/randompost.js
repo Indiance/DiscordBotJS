@@ -16,7 +16,11 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('randompost')
 		.setDescription('return a random post from a subreddit of a user choice')
-		.addStringOption(option => option.setName('subreddit').setDescription('subreddit of your choice').setRequired(true)),
+		.addStringOption(option => option
+            .setName('subreddit')
+            .setDescription('subreddit of your choice')
+            .setRequired(true)
+        ),
 	async execute(interaction) {
 		// getting the subreddit string
 		const srString = interaction.options.getString('subreddit');
@@ -25,16 +29,21 @@ module.exports = {
 		/* reading the submission and aligning it to an embed.
 		* Then sending that embed
 		*/
-		subReddit.getRandomSubmission().then(post => {
-			const randompostEmbed = new MessageEmbed()
-				.setTitle(post.title)
-				.setAuthor(post.author.name)
-				.setDescription(post.selftext)
-				.setURL(`https://www.reddit.com${post.permalink}`)
-				.setFooter(`⬆️ ${post.ups} | 💬 ${post.comments.length}`)
-				.setImage(post.url);
-			interaction.reply({ embeds: [randompostEmbed] });
-			// incase the subreddit is not found, the error can be caught and an ephemeral response can be sent out
-		}).catch(interaction.reply({ content: 'that subreddit could not be found', ephemeral: true }));
+        try {
+            subReddit.getRandomSubmission().then(post => {
+                const randompostEmbed = new MessageEmbed()
+                    .setTitle(post.title)
+                    .setAuthor(post.author.name)
+                    .setDescription(post.selftext)
+                    .setURL(`https://www.reddit.com${post.permalink}`)
+                    .setFooter(`⬆️ ${post.ups} | 💬 ${post.comments.length}`)
+                    .setImage(post.url);
+                interaction.reply({ embeds: [randompostEmbed] });
+            })
+        }
+        // A very primitive form of error handling. TODO: Fix it
+        catch {
+            interaction.reply('This subreddit could not be found');
+        }
 	},
 };
